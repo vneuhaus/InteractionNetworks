@@ -21,7 +21,7 @@ def plotpowerlaw(data, ax=None, show_fit=True, color='blue', xmin=1):
     pl_obj.plot_pdf(ax=ax, original_data=True,color=color, **{'label': str_label})
     if show_fit:
         str_label_fit = r'$\alpha$ = {:0.3f}'.format(pl_obj.power_law.alpha)
-        pl_obj.power_law.plot_pdf(ax=ax, color=color, linestyle='--', **{'label': str_label_fit})
+        pl_obj.power_law.plot_cdf(ax=ax, color=color, linestyle='--', **{'label': str_label_fit})
     ax.legend()
 
 def plotdegrees(data_in, data_out, ax=None, show_lin=True, subreddit=None, color='blue'):

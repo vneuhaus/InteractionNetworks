@@ -26,3 +26,7 @@ __pycache__/datahandling.cpython-39.pyc
 __pycache__/plotting.cpython-39.pyc
 arrays/AskWomenjan2020.npy
 arrays/IAmAjan2020.npy
+arrays/churningjan2020.npy
+arrays/countingjan2020.npy
+reddit/__pycache__/datahandling.cpython-39.pyc
+reddit/__pycache__/plotting.cpython-39.pyc
