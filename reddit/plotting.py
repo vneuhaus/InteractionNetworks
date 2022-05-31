@@ -16,12 +16,12 @@ def plotpowerlaw(data, ax=None, show_fit=True, color='blue', xmin=1):
         ax = plt.gca()
     # Plots data
     data_nonzero = data[data > 0]
-    pl_obj = plw.Fit(data_nonzero, method='KS', discrete=True, xmin=xmin)
+    pl_obj = plw.Fit(data_nonzero, discrete=True, xmin=xmin)
     str_label = r'N = {:0.0f}'.format(data_nonzero.size)
     pl_obj.plot_pdf(ax=ax, original_data=True,color=color, **{'label': str_label})
     if show_fit:
         str_label_fit = r'$\alpha$ = {:0.3f}'.format(pl_obj.power_law.alpha)
-        pl_obj.power_law.plot_cdf(ax=ax, color=color, linestyle='--', **{'label': str_label_fit})
+        pl_obj.power_law.plot_pdf(ax=ax, color=color, linestyle='--', **{'label': str_label_fit})
     ax.legend()
 
 def plotdegrees(data_in, data_out, ax=None, show_lin=True, subreddit=None, color='blue'):
@@ -33,7 +33,7 @@ def plotdegrees(data_in, data_out, ax=None, show_lin=True, subreddit=None, color
     if subreddit is not None:
         ax.set_title(subreddit)
     slope, intercept, r, p, se = linregress(data_in, data_out,alternative='greater')
-    str_label = r'r-Value: {:0.3f}, p-Value:{:0.3f}'.format(r,p)
+    str_label = r'r-Value: {:0.3f}'.format(r)
     ax.scatter(data_in, data_out, color=color, alpha=0.3, **{'label': str_label})
     ax.legend()
     ax.set_box_aspect(1)
