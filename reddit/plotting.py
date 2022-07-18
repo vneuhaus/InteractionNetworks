@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import linregress
 
-def plotpowerlaw(data, ax=None, show_fit=True, color='blue', xmin=1):
+def plotpowerlaw(data, ax=None, show_fit=True, discrete=True, color='blue', xmin=1):
     """Plots the probability distribution of data with a power-law fit
 	Args:
 		data (list): 
@@ -16,12 +16,36 @@ def plotpowerlaw(data, ax=None, show_fit=True, color='blue', xmin=1):
         ax = plt.gca()
     # Plots data
     data_nonzero = data[data > 0]
-    pl_obj = plw.Fit(data_nonzero, discrete=True, xmin=xmin)
+    fit = plw.Fit(data_nonzero, discrete=discrete, xmin=xmin, linear_bins=True)
     #str_label = r'N = {:0.0f}'.format(data_nonzero.size)
-    pl_obj.plot_pdf(ax=ax, original_data=True,color=color)#, **{'label': str_label})
+    fit.plot_pdf(ax=ax, original_data=True)#, **{'label': str_label})
+
     if show_fit:
-        str_label_fit = r'$\alpha$ = {:0.3f}'.format(pl_obj.power_law.alpha)
-        pl_obj.power_law.plot_pdf(ax=ax, color=color, linestyle='--', **{'label': str_label_fit})
+        str_label_fit = r'$\alpha$ = {:0.3f}'.format(fit.power_law.alpha)
+        fit.power_law.plot_pdf(ax=ax, color='k', linestyle='--', **{'label': str_label_fit})
+    ax.legend()
+    print(fit.power_law.alpha)
+    return fit.power_law.alpha
+
+def plotlognormal(data, ax=None, show_fit=True, discrete=True, color='blue', xmin=1):
+    """Plots the probability distribution of data with a power-law fit
+	Args:
+		data (list): 
+		ax (None, optional): 
+		show_fit (bool, optional): 
+		xmin (int, optional): 
+	"""
+    if ax is None:
+        ax = plt.gca()
+    # Plots data
+    data_nonzero = data[data > 0]
+    fit = plw.Fit(data_nonzero, discrete=discrete, xmin=xmin, xmax=None, discrete_approximation='round')
+    #str_label = r'N = {:0.0f}'.format(data_nonzero.size)
+    fit.plot_pdf(ax=ax, original_data=True,color=color)#, **{'label': str_label})
+
+    if show_fit:
+        str_label_fit = r'$\mu$ = {:0.3f}, $\sigma$ = {:0.3f}'.format(fit.lognormal.mu, fit.lognormal.sigma)
+        fit.lognormal.plot_pdf(ax=ax, color='k', linestyle='--', **{'label': str_label_fit})
     ax.legend()
 
 def plotdegrees(data_in, data_out, ax=None, show_lin=True, title=None, color='blue'):
@@ -29,7 +53,7 @@ def plotdegrees(data_in, data_out, ax=None, show_lin=True, title=None, color='bl
         ax = plt.gca()
     if show_lin:
         xmax = data_in.max()
-        ax.plot([0,xmax],[0,xmax],ls='--',lw=2,color='black')
+        ax.plot([0,xmax],[0,xmax],ls='--',lw=2,color='black', label='x=y')
     
     slope, intercept, r, p, se = linregress(data_in, data_out,alternative='greater')
     str_label = r'r-Value: {:0.3f}'.format(r)

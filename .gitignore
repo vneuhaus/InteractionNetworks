@@ -391,3 +391,9 @@ top100/first100000/desmoines_2020.npy
 botscraper.py
 bots.npy
 botscraper.ipynb
+plots/output.png
+plots/Subreddits_connections.pdf
+plots/Subreddits_connections.png
+plots/WeirdReddits.png
+reddit_network_valentin.pptx
+reddit/__pycache__/network.cpython-39.pyc

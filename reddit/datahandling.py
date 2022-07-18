@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import tqdm
+from tqdm import tqdm
 import math 
 
 def getPipeline(subreddit, start, end, limit=100000):
@@ -33,7 +33,6 @@ def getDataframe(db, subreddit, start, end, which='both'):
         df.drop(columns=['subreddit','score', 'link_id','_id','created_utc','num_comments','domain'], errors='ignore', inplace=True)
         if which == 'submissions':
             df.insert(2, 'parent_id', '')
-
     else:
         df_sub = getDataframe(subreddit, which='submissions')
         df_com = getDataframe(subreddit,which='comments')
@@ -64,15 +63,19 @@ def getMyParents(df):
 
 def getData(db,subreddit,start,end,which,save=True):
     try:
-        data = np.load('./top100/first10000/{}_2020.npy'.format(subreddit), allow_pickle=True)
+        data = np.load('./top100/first1000000/{}_2020.npy'.format(subreddit), allow_pickle=True)
+        return data
     except:
-        print('Subreddit not analyzed yet. Generating new array. This may take a while...')
+        pass
+    try:
         df = getDataframe(db,subreddit,start,end,'comments')
         data = getMyParents(df)
         del(df)
         if save:
             np.save('./top100/first100000/{}_2020.npy'.format(subreddit), data)
-    return data
+        return data
+    except:
+        return None
 
 
 """def generateAdjMatrix(data, num_users):
@@ -82,3 +85,31 @@ def getData(db,subreddit,start,end,which,save=True):
             adj_matrix[int(row['user_id']),int(row['link_user_id'])] += 1
     adj_matrix = adj_matrix/adj_matrix.max()
     return adj_matrix"""
+
+def getTop(db, top, sortby = None):
+    if sortby is None:
+        raise NameError('No argument to sort by')
+    pipe = [
+        {'$sort': {sortby:-1}},
+        {'$limit': top},
+        {'$project': {'_id':1}}
+    ]
+    collection = db.subreddit_submissions
+    cursor = collection.aggregate(pipe)
+    df = pd.DataFrame(list(cursor))
+    df_array = df.to_numpy()
+    return(df_array)
+
+def getTopNum(db, top, sortby = None):
+    if sortby is None:
+        raise NameError('No argument to sort by')
+    pipe = [
+        {'$sort': {sortby:-1}},
+        {'$limit': top},
+        {'$project': {'comments':1, '_id': -1}}
+    ]
+    collection = db.subreddit_submissions
+    cursor = collection.aggregate(pipe)
+    df = pd.DataFrame(list(cursor))
+    df_array = df.to_numpy()
+    return(df_array)

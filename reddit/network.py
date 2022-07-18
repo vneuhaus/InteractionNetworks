@@ -11,7 +11,16 @@ def genDirNet(data, ):
             G.add_edge(int(row[3]),row[4])
     return G
 
-def degree_histogram_directed(G, in_degree=False, out_degree=False):
+def genNewNet(edges):
+    G = nx.MultiDiGraph()
+    num_users = np.unique(edges[0]).shape[0]
+    edges = edges[:,np.array(edges[1])!=-1]
+    G.add_nodes_from(np.arange(num_users))
+    for edge in np.transpose(edges):
+        G.add_edge(int(edge[0]),edge[1])
+    return G
+
+def degree_histogram_directed(G, in_degree=False, out_degree=False, normalize=False):
     nodes = G.nodes()
     if in_degree:
         in_degree = dict(G.in_degree())
@@ -25,4 +34,6 @@ def degree_histogram_directed(G, in_degree=False, out_degree=False):
     freq= [ 0 for d in range(dmax) ]
     for d in degseq:
         freq[d] += 1
+    if normalize:
+        freq = np.divide(freq, np.max(freq))
     return freq
