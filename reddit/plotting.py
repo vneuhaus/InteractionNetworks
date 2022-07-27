@@ -24,7 +24,6 @@ def plotpowerlaw(data, ax=None, show_fit=True, discrete=True, color='blue', xmin
         str_label_fit = r'$\alpha$ = {:0.3f}'.format(fit.power_law.alpha)
         fit.power_law.plot_pdf(ax=ax, color='k', linestyle='--', **{'label': str_label_fit})
     ax.legend()
-    print(fit.power_law.alpha)
     return fit.power_law.alpha
 
 def plotlognormal(data, ax=None, show_fit=True, discrete=True, color='blue', xmin=1):
@@ -44,8 +43,8 @@ def plotlognormal(data, ax=None, show_fit=True, discrete=True, color='blue', xmi
     fit.plot_pdf(ax=ax, original_data=True,color=color)#, **{'label': str_label})
 
     if show_fit:
-        str_label_fit = r'$\mu$ = {:0.3f}, $\sigma$ = {:0.3f}'.format(fit.lognormal.mu, fit.lognormal.sigma)
-        fit.lognormal.plot_pdf(ax=ax, color='k', linestyle='--', **{'label': str_label_fit})
+        str_label_fit = r'$\mu$ = {:0.3f}, $\sigma$ = {:0.3f}'.format(fit.lognormal_positive.mu, fit.lognormal_positive.sigma)
+        fit.lognormal_positive.plot_pdf(ax=ax, color='k', linestyle='--', **{'label': str_label_fit})
     ax.legend()
 
 def plotdegrees(data_in, data_out, ax=None, show_lin=True, title=None, color='blue'):
