@@ -47,6 +47,17 @@ def plotlognormal(data, ax=None, show_fit=True, discrete=True, color='blue', xmi
         fit.lognormal_positive.plot_pdf(ax=ax, color='k', linestyle='--', **{'label': str_label_fit})
     ax.legend()
 
+def plotDegreedistr(G, axis, in_degree=False, out_degree=False, color='blue'):
+    if in_degree:
+        degr = np.array(G.in_degree())[:,1]
+    elif out_degree:
+        degr = np.array(G.out_degree())[:,1]
+    else:
+        degr = np.array(G.degree())[:,1]
+    #alpha = plotting.plotpowerlaw(degr, axis, show_fit=True, discrete=False, xmin=1)
+    plotlognormal(degr, axis, show_fit=True, color=color, discrete=False, xmin=1)
+    return 0
+
 def plotdegrees(data_in, data_out, ax=None, show_lin=True, title=None, color='blue'):
     if ax is None:
         ax = plt.gca()

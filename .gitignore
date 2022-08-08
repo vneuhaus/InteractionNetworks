@@ -397,3 +397,6 @@ plots/Subreddits_connections.png
 plots/WeirdReddits.png
 reddit_network_valentin.pptx
 reddit/__pycache__/network.cpython-39.pyc
+SubredditsData/Coronavirus.h5
+SubredditsData/Coronavirus.npy
+RandomGraph.ipynb
