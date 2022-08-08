@@ -1,6 +1,7 @@
 import math
 import networkx as nx
 import numpy as np
+from itertools import combinations
 
 def genDirNet(data, ):
     G = nx.MultiDiGraph()
@@ -37,3 +38,13 @@ def degree_histogram_directed(G, in_degree=False, out_degree=False, normalize=Fa
     if normalize:
         freq = np.divide(freq, np.max(freq))
     return freq
+
+def get_triangles(g):
+    result = [0] * g.vcount()
+    adjlist = [set(neis) for neis in g.get_adjlist()]
+    print(np.shape(adjlist))
+    for vertex, neis in enumerate(adjlist):
+        for nei1, nei2 in combinations(neis, 2):
+            if nei1 in adjlist[nei2]:
+                result[vertex] += 1
+    return result
