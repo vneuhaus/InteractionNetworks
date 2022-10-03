@@ -1,16 +1,16 @@
 import math
 import networkx as nx
 import numpy as np
+import pandas as pd
+from tqdm.notebook import tqdm
 from itertools import combinations
+import igraph as ig
 
-def genDirNet(data, ):
-    G = nx.MultiDiGraph()
-    num_users = data.shape[0]
-    G.add_nodes_from(np.arange(num_users))
-    for index, row in enumerate(data):
-        if row[4] != -1 and not math.isnan(row[4]) and not math.isnan(row[3]):
-            G.add_edge(int(row[3]),row[4])
+def hdf_to_net(file,directed):
+    df = pd.read_hdf(file,key = 'df')
+    G = ig.Graph.DataFrame(df[['author','parent_author']].astype(str), directed)
     return G
+
 
 def genNewNet(edges):
     G = nx.MultiDiGraph()
@@ -21,16 +21,10 @@ def genNewNet(edges):
         G.add_edge(int(edge[0]),edge[1])
     return G
 
-def degree_histogram_directed(G, in_degree=False, out_degree=False, normalize=False):
+def degree_histogram_directed(G, mode='all', normalize=False):
     nodes = G.nodes()
-    if in_degree:
-        in_degree = dict(G.in_degree())
-        degseq=[in_degree.get(k,0) for k in nodes]
-    elif out_degree:
-        out_degree = dict(G.out_degree())
-        degseq=[out_degree.get(k,0) for k in nodes]
-    else:
-        degseq=[v for k, v in G.degree()]
+    degr = dict(G.degree(mode=mode))
+    degseq=[degr.get(k,0) for k in nodes]
     dmax=max(degseq)+1
     freq= [ 0 for d in range(dmax) ]
     for d in degseq:
@@ -39,12 +33,12 @@ def degree_histogram_directed(G, in_degree=False, out_degree=False, normalize=Fa
         freq = np.divide(freq, np.max(freq))
     return freq
 
-def get_triangles(g):
-    result = [0] * g.vcount()
-    adjlist = [set(neis) for neis in g.get_adjlist()]
-    print(np.shape(adjlist))
+def get_triangles(G):
+    result = [0] * G.vcount()
+    adjlist = [set(neis) for neis in G.get_adjlist()]
     for vertex, neis in enumerate(adjlist):
-        for nei1, nei2 in combinations(neis, 2):
-            if nei1 in adjlist[nei2]:
-                result[vertex] += 1
+        if (len(neis)) < 10000:
+            for nei1, nei2 in combinations(neis, 2):
+                if nei1 in adjlist[nei2]:
+                    result[vertex] += 1
     return result
