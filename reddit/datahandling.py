@@ -4,14 +4,14 @@ from tqdm.notebook import tqdm
 
 def save_to_hdf5(db, collection, file, subreddit):
     """
-	Loads data from the database for a single subreddit and saves it in an hdf5 file
-	Args:
-		db:
-		collection:
-		file:
+    Loads data from the database for a single subreddit and saves it in an hdf5 file
+    Args:
+        db:
+        collection:
+        file:
         subreddit:
-	Returns:
-	"""
+    Returns:
+    """
     csr = db[collection].find({'subreddit': subreddit},{'_id': 0, 'link_id':0, 'score':0, 'subreddit': 0, 'created_utc':0}, batch_size=100000)
     ls = []
     i = 0
@@ -28,14 +28,14 @@ def save_to_hdf5(db, collection, file, subreddit):
 
 def preprocess_hdf(file_from, file_to, rem_bots=True, rem_del=True):
     """
-	Preprocesses the data saved in an hdf5 file and saves in a new one
-	Args:
-		file_from:
-		file_to:
-		rem_bots: if true removes 
+    Preprocesses the data saved in an hdf5 file and saves in a new one
+    Args:
+        file_from:
+        file_to:
+        rem_bots: if true removes 
         rem_del: if true removes posts with deleted authors; otherwise those posts are also removed but users connections are preserved
-	Returns:
-	"""
+    Returns:
+    """
     df = pd.read_hdf(file_from, key='df')
     bots = np.load('bots.npy')
     
